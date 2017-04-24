@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: me.wuwenbin:template-utils-pojo:1.2.0">
+    <CLASSES>
+      <root url="jar:///usr/local/maven respository/me/wuwenbin/template-utils-pojo/1.2.0/template-utils-pojo-1.2.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar:///usr/local/maven respository/me/wuwenbin/template-utils-pojo/1.2.0/template-utils-pojo-1.2.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar:///usr/local/maven respository/me/wuwenbin/template-utils-pojo/1.2.0/template-utils-pojo-1.2.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
