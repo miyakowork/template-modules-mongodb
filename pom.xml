@@ -4,7 +4,7 @@
 
     <groupId>me.wuwenbin</groupId>
     <artifactId>template-modules-mongodb</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <build>
         <plugins>
             <plugin>
@@ -105,18 +105,21 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <version>1.8.9</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <version>3.1</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -130,6 +133,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.24</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

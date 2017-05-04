@@ -1,3 +1,6 @@
+# 1.1.0 更新日志
+- 使用ThreadLocal类来处理同一线程中公共数据源的动态设置处理的问题、
+
 # 1.0.0 发布日志`
 - jdk7以上，需spring4和AOP支持
 - spring-data-mongodb 1.10.1.RELEASE版本

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.templateproject.mongodb.dao.MongoAccessor;
 import org.templateproject.mongodb.dao.MongoDbTemplate;
 import org.templateproject.mongodb.exception.DataSourceKeyNotExistException;
+import org.templateproject.mongodb.factory.support.MongoContextHolder;
 import org.templateproject.mongodb.support.core.MongoDataSource;
 
 import java.util.Hashtable;
@@ -59,7 +60,7 @@ public class MongoFactory implements InitializingBean {
      *
      * @param dataSource
      */
-    public void setDefaultMongoDao(MongoDataSource dataSource) {
+    public synchronized void setDefaultMongoDao(MongoDataSource dataSource) {
         this.defaultMongoDataSource = dataSource;
         this.dynamicMongoDataSource = this.defaultMongoDataSource;
         List<ServerAddress> seeds = dataSource.getSeeds();
@@ -73,30 +74,33 @@ public class MongoFactory implements InitializingBean {
 
 
     /**
-     * 动态数据源切换
+     * 根据当前线程中的key变量值来动态数据源。
      * <p>
      * 有3中情况切换.
      * 1、仅切换数据源，即根据xml中配置的key来切换不同数据源的mongo。变动数据源，默认数据库按照初始化的不变
      * 2、仅切换默认操作文档（数据库），即变更此同一数据源下的文档（数据库）。数据源不变，变动操作文档（数据库）
      * 3、以上两种情况同时发生
-     *
-     * @param key
-     * @param database
      */
-    public void setDynamicMongoDao(String key, String database) {
-        if (!mongoDataSources.containsKey(key)) throw new DataSourceKeyNotExistException();
-        this.dynamicMongoDataSource = mongoDataSources.get(key);
-        this.dynamicMongoDao = getMongoDbDaoByKeyAndDataBase(key, database);
+    public synchronized void determineDynamicMongoDao() {
+        String currentThreadKey = MongoContextHolder.getHolder().getKey();
+        String currentThreadDatabase = MongoContextHolder.getHolder().getDatabase();
+        if (!mongoDataSources.containsKey(currentThreadKey))
+            throw new DataSourceKeyNotExistException();
+        this.dynamicMongoDataSource = mongoDataSources.get(currentThreadKey);
+        this.dynamicMongoDao = getMongoDbDaoByKeyAndDataBase(currentThreadKey, currentThreadDatabase);
     }
 
-    public void setDynamicMongoDaoByKey(String key) {
-        if (!mongoDataSources.containsKey(key)) throw new DataSourceKeyNotExistException();
-        this.dynamicMongoDataSource = mongoDataSources.get(key);
-        this.dynamicMongoDao = getMongoDbDaoByKey(key);
+    public synchronized void determineDynamicMongoDaoByKey() {
+        String currentThreadKey = MongoContextHolder.getHolder().getKey();
+        if (!mongoDataSources.containsKey(currentThreadKey))
+            throw new DataSourceKeyNotExistException();
+        this.dynamicMongoDataSource = mongoDataSources.get(currentThreadKey);
+        this.dynamicMongoDao = getMongoDbDaoByKey(currentThreadKey);
     }
 
-    public void setDynamicMongoDaoByDatabase(String database) {
-        this.dynamicMongoDao = getMongoDbDaoByDataBase(database);
+    public synchronized void determineDynamicMongoDaoByDatabase() {
+        String currentThreadDatabase = MongoContextHolder.getHolder().getDatabase();
+        this.dynamicMongoDao = getMongoDbDaoByDataBase(currentThreadDatabase);
     }
 
     @Override

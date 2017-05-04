@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.templateproject.mongodb.annotation.DynamicMongoSource;
 import org.templateproject.mongodb.factory.MongoFactory;
+import org.templateproject.mongodb.factory.support.MongoContextHolder;
 
 import java.lang.reflect.Method;
 
@@ -48,12 +49,21 @@ public class MongoSourceAspect {
         if (method.isAnnotationPresent(DynamicMongoSource.class)) {
             String key = method.getAnnotation(DynamicMongoSource.class).key();
             String db = method.getAnnotation(DynamicMongoSource.class).db();
-            if (!StringUtils.isEmpty(key) && !StringUtils.isEmpty(db))
-                mongoFactory.setDynamicMongoDao(key, db);
-            if (StringUtils.isEmpty(key) && !StringUtils.isEmpty(db))
-                mongoFactory.setDynamicMongoDaoByDatabase(db);
-            if (StringUtils.isEmpty(db) && !StringUtils.isEmpty(key))
-                mongoFactory.setDynamicMongoDaoByKey(key);
+            if (!StringUtils.isEmpty(key) && !StringUtils.isEmpty(db)) {
+                MongoContextHolder.setHolder(key, db);
+                mongoFactory.determineDynamicMongoDao();
+            }
+
+            if (StringUtils.isEmpty(key) && !StringUtils.isEmpty(db)) {
+                MongoContextHolder.setHolder(null, db);
+                mongoFactory.determineDynamicMongoDaoByDatabase();
+            }
+
+            if (StringUtils.isEmpty(db) && !StringUtils.isEmpty(key)) {
+                MongoContextHolder.setHolder(key, null);
+                mongoFactory.determineDynamicMongoDaoByKey();
+            }
+
         }
     }
 
@@ -70,7 +80,7 @@ public class MongoSourceAspect {
         Method method = clazz.getMethod(methodName, argClass);
         if (method.isAnnotationPresent(DynamicMongoSource.class)) {
             mongoFactory.dynamicMongoDao = mongoFactory.defaultMongoDao;
-
+            MongoContextHolder.clearHolder();
         }
     }
 }
