@@ -21,8 +21,9 @@ public class MongoTest {
 //        System.err.println(mongoFactory.defaultMongoDao.getMongoTemplate().getDb());
 //        List<Idea> idea = mongoFactory.defaultMongoDao.findListBean(Idea.class);
 //        System.err.println(idea.toString());
-        mongoService.findAdmin();
-        mongoService.findIdea();
+//        mongoService.findAdmin();
+//        mongoService.findIdea();
+        mongoService.addTest();
     }
 
 
